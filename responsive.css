@@ -1,0 +1,108 @@
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 1400px) {
+    .main-container {
+        grid-template-columns: 280px 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        position: static;
+        margin-bottom: 30px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+        gap: 20px;
+        padding: 16px 20px;
+    }
+    
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .processing-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        margin-top: 200px;
+        padding: 0 20px;
+    }
+    
+    .dashboard-header {
+        padding: 30px 20px;
+    }
+    
+    .welcome-text h1 {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tool-card {
+        padding: 24px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .flashcard-container {
+        max-width: 100%;
+    }
+    
+    .chatbot-container {
+        width: 300px;
+        height: 500px;
+        right: 20px;
+        bottom: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        margin-top: 220px;
+    }
+    
+    .processing-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .logo span {
+        display: none;
+    }
+    
+    .user-profile span:not(.streak-badge) {
+        display: none;
+    }
+    
+    .welcome-content {
+        padding: 30px 20px;
+    }
+    
+    .study-goals {
+        grid-template-columns: 1fr;
+    }
+    
+    .chatbot-container {
+        width: 280px;
+        height: 450px;
+    }
+}

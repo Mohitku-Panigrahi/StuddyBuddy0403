@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy Pro – AI Study Companion</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body data-theme="default">
+    <!-- NOISE OVERLAY -->
+    <div class="noise"></div>
+
+    <!-- WELCOME MODAL -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="welcome-content glass-card">
+            <div class="welcome-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1 class="text-gradient">Welcome to StudyBuddy Pro</h1>
+            <p class="text-muted">Your AI-powered study companion</p>
+            
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> What's your name?</label>
+                <input type="text" id="userName" class="form-input" placeholder="Enter your name" autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-bullseye"></i> Study goal</label>
+                <div class="study-goals">
+                    <div class="goal-option" data-goal="exam">
+                        <i class="fas fa-file-alt"></i>
+                        <h4>Exam Prep</h4>
+                    </div>
+                    <div class="goal-option" data-goal="learn">
+                        <i class="fas fa-brain"></i>
+                        <h4>Learn Skills</h4>
+                    </div>
+                    <div class="goal-option" data-goal="research">
+                        <i class="fas fa-search"></i>
+                        <h4>Research</h4>
+                    </div>
+                    <div class="goal-option" data-goal="professional">
+                        <i class="fas fa-briefcase"></i>
+                        <h4>Professional</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-chart-line"></i> Study level</label>
+                <select id="studyLevel" class="form-input">
+                    <option value="">Select your level</option>
+                    <option value="highschool">High School</option>
+                    <option value="undergrad">Undergraduate</option>
+                    <option value="graduate">Graduate</option>
+                    <option value="professional">Professional</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" id="startJourneyBtn" style="width: 100%;">
+                <i class="fas fa-rocket"></i> Start Learning
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER – Premium Glassmorphism -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>StudyBuddy Pro</span>
+            </div>
+            
+            <nav>
+                <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="#tools"><i class="fas fa-tools"></i> Tools</a>
+                <a href="#progress"><i class="fas fa-chart-network"></i> Progress</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="theme-switcher">
+                    <button class="btn btn-outline" id="themeToggleBtn">
+                        <i class="fas fa-palette"></i> Theme
+                    </button>
+                    <div class="theme-dropdown" id="themeDropdown">
+                        <div class="theme-option" data-theme="default">
+                            <span class="theme-color default"></span> Default
+                        </div>
+                        <div class="theme-option" data-theme="orange">
+                            <span class="theme-color orange"></span> Orange
+                        </div>
+                        <div class="theme-option" data-theme="pink">
+                            <span class="theme-color pink"></span> Pink
+                        </div>
+                        <div class="theme-option" data-theme="red">
+                            <span class="theme-color red"></span> Red
+                        </div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="userAvatar">JD</div>
+                    <span id="userNameDisplay">Learner</span>
+                    <span class="streak-badge"><i class="fas fa-fire"></i> <span id="streakDays">0</span></span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <button class="btn btn-outline" id="focusModeBtn">
+                    <i class="fas fa-eye"></i> Focus
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- SIDEBAR – Interactive Glass -->
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <i class="fas fa-compass"></i>
+                <h3>Navigation</h3>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#notes">
+                    <i class="fas fa-sticky-note"></i>
+                    <span>Smart Notes</span>
+                </a>
+                <a href="#quiz">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Quiz Generator</span>
+                </a>
+                <a href="#flashcards">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Flashcards</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-stats">
+                <h4><i class="fas fa-chart-bar"></i> Today</h4>
+                <div class="stat-item">
+                    <span><i class="fas fa-clock"></i> Study time</span>
+                    <span class="stat-value" id="studyTime">0m</span>
+                </div>
+                <div class="stat-item">
+                    <span><i class="fas fa-check-circle"></i> Tasks</span>
+                    <span class="stat-value" id="tasksDone">0</span>
+                </div>
+                <div class="stat-item">
+                    <span><i class="fas fa-bolt"></i> XP</span>
+                    <span class="stat-value" id="xpEarned">0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- DASHBOARD HEADER – Hero Style -->
+            <section class="dashboard-header glass-card">
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="dynamicUserName">Learner</span> 👋</h1>
+                    <p class="quote" id="dailyQuote">"The expert in anything was once a beginner."</p>
+                    <div class="quick-stats">
+                        <span class="pill"><i class="fas fa-bolt"></i> XP: <span id="userXP">0</span></span>
+                        <span class="pill"><i class="fas fa-trophy"></i> Level <span id="userLevel">1</span></span>
+                        <span class="pill"><i class="fas fa-fire"></i> Streak <span id="streakMain">0</span></span>
+                    </div>
+                </div>
+                <div class="hero-glow"></div>
+            </section>
+
+            <!-- STATS GRID – Colourful, Interactive -->
+            <section class="stats-grid">
+                <div class="stat-card stat-notes">
+                    <div class="stat-icon">
+                        <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="notesCount">0</h3>
+                        <p>Notes</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-quiz">
+                    <div class="stat-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="quizCount">0</h3>
+                        <p>Quizzes</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-flashcards">
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="flashcardsCount">0</h3>
+                        <p>Flashcards</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-time">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalStudyTime">0h</h3>
+                        <p>Study time</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION TITLE – AI Tools -->
+            <div class="section-header">
+                <h2 class="text-gradient">⚡ AI Study Tools</h2>
+                <p class="text-muted">Upload any document and let AI do the heavy lifting.</p>
+            </div>
+
+            <!-- PDF TO SMART NOTES -->
+            <section class="tool-card glass-card" id="notes">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background: rgba(139, 92, 246, 0.2); color: var(--primary);">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h3>PDF to Smart Notes</h3>
+                        <p class="text-muted">Turn PDFs into structured study notes</p>
+                    </div>
+                </div>
+                
+                <div class="upload-area" id="notesUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h4>Drag & drop or click to upload</h4>
+                        <p class="text-muted">PDF up to 50MB</p>
+                    </div>
+                    <input type="file" class="file-input" id="notesUpload" accept=".pdf">
+                    
+                    <!-- File Preview -->
+                    <div class="file-preview" id="notesFilePreview">
+                        <div class="file-info">
+                            <i class="fas fa-file-pdf file-icon"></i>
+                            <div class="file-details">
+                                <h5 id="notesFileName">document.pdf</h5>
+                                <p id="notesFileSize" class="text-muted">0 MB</p>
+                            </div>
+                        </div>
+                        <button class="icon-btn" id="clearNotesFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="notesEmptyState">
+                        <i class="fas fa-file-import"></i>
+                        <p>No file selected</p>
+                    </div>
+                </div>
+                
+                <div class="processing-options">
+                    <div class="option-card selected" data-type="detailed">
+                        <i class="fas fa-list-alt"></i>
+                        <h4>Detailed</h4>
+                    </div>
+                    <div class="option-card" data-type="summary">
+                        <i class="fas fa-file-contract"></i>
+                        <h4>Summary</h4>
+                    </div>
+                    <div class="option-card" data-type="bullet">
+                        <i class="fas fa-list-ul"></i>
+                        <h4>Bullet</h4>
+                    </div>
+                    <div class="option-card" data-type="mindmap">
+                        <i class="fas fa-project-diagram"></i>
+                        <h4>Mind Map</h4>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="generateNotesBtn" disabled>
+                        <i class="fas fa-magic"></i> Generate Notes
+                    </button>
+                    <button class="btn btn-outline" id="sampleNotesBtn">
+                        <i class="fas fa-eye"></i> Sample
+                    </button>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="results-section" id="notesResults">
+                    <div class="results-header">
+                        <h3><i class="fas fa-sticky-note" style="color: var(--primary);"></i> Generated Notes</h3>
+                        <button class="icon-btn" id="downloadNotesBtn">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                    <div class="results-content" id="notesContent">
+                        <!-- Notes will appear here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- PDF TO SMART QUIZ -->
+            <section class="tool-card glass-card" id="quiz">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--secondary);">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div>
+                        <h3>PDF to Smart Quiz</h3>
+                        <p class="text-muted">Generate interactive quizzes from your documents</p>
+                    </div>
+                </div>
+                
+                <div class="upload-area" id="quizUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h4>Upload PDF, DOCX, or TXT</h4>
+                        <p class="text-muted">Up to 50MB</p>
+                    </div>
+                    <input type="file" class="file-input" id="quizUpload" accept=".pdf,.docx,.txt">
+                    
+                    <div class="file-preview" id="quizFilePreview">
+                        <div class="file-info">
+                            <i class="fas fa-file-alt file-icon"></i>
+                            <div class="file-details">
+                                <h5 id="quizFileName">document.pdf</h5>
+                                <p id="quizFileSize" class="text-muted">0 MB</p>
+                            </div>
+                        </div>
+                        <button class="icon-btn" id="clearQuizFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="empty-state" id="quizEmptyState">
+                        <i class="fas fa-file-import"></i>
+                        <p>No file selected</p>
+                    </div>
+                </div>
+                
+                <div class="processing-options">
+                    <div class="option-card selected" data-type="mcq">
+                        <i class="fas fa-dot-circle"></i>
+                        <h4>MCQs</h4>
+                    </div>
+                    <div class="option-card" data-type="truefalse">
+                        <i class="fas fa-check"></i>
+                        <h4>True/False</h4>
+                    </div>
+                    <div class="option-card" data-type="short">
+                        <i class="fas fa-pen"></i>
+                        <h4>Short Answer</h4>
+                    </div>
+                    <div class="option-card" data-type="mixed">
+                        <i class="fas fa-random"></i>
+                        <h4>Mixed</h4>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="generateQuizBtn" disabled>
+                        <i class="fas fa-brain"></i> Generate Quiz
+                    </button>
+                    <button class="btn btn-outline" id="sampleQuizBtn">
+                        <i class="fas fa-eye"></i> Sample
+                    </button>
+                </div>
+                
+                <div class="results-section" id="quizResults">
+                    <div class="results-header">
+                        <h3><i class="fas fa-question-circle" style="color: var(--secondary);"></i> Smart Quiz</h3>
+                    </div>
+                    <div class="results-content" id="quizContent">
+                        <!-- Quiz will appear here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SMART FLASHCARDS -->
+            <section class="tool-card glass-card" id="flashcards">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--accent);">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h3>Smart Flashcards</h3>
+                        <p class="text-muted">Turn notes into interactive flashcards</p>
+                    </div>
+                </div>
+                
+                <div class="upload-area" id="flashcardUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h4>Upload PDF or text file</h4>
+                        <p class="text-muted">Or create manually</p>
+                    </div>
+                    <input type="file" class="file-input" id="flashcardUpload" accept=".pdf,.txt,.docx">
+                    
+                    <div class="empty-state" id="flashcardEmptyState">
+                        <i class="fas fa-file-import"></i>
+                        <p>No file selected</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button class="btn btn-primary" id="generateFlashcardsBtn">
+                        <i class="fas fa-layer-group"></i> Generate
+                    </button>
+                    <button class="btn btn-outline" id="textInputBtn">
+                        <i class="fas fa-keyboard"></i> Type Text
+                    </button>
+                    <button class="btn btn-outline" id="voiceInputBtn">
+                        <i class="fas fa-microphone"></i> Voice
+                    </button>
+                </div>
+                
+                <!-- Flashcard Container -->
+                <div class="results-section" id="flashcardsResults">
+                    <div class="flashcard-header">
+                        <h3><i class="fas fa-layer-group" style="color: var(--accent);"></i> Flashcards</h3>
+                        <div class="flashcard-controls">
+                            <button class="icon-btn" id="prevCardBtn"><i class="fas fa-chevron-left"></i></button>
+                            <span id="cardCounter">0/0</span>
+                            <button class="icon-btn" id="nextCardBtn"><i class="fas fa-chevron-right"></i></button>
+                            <button class="icon-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="flashcard-container">
+                        <div class="flashcard" id="flashcard">
+                            <div class="flashcard-front">
+                                <h3>Front of card</h3>
+                                <p>Click to flip</p>
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>Answer</h3>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flashcard-actions">
+                        <button class="btn btn-success" id="knowBtn"><i class="fas fa-check-circle"></i> I Know This</button>
+                        <button class="btn btn-outline" id="dontKnowBtn"><i class="fas fa-times-circle"></i> Need Practice</button>
+                    </div>
+                    
+                    <div class="retention-rate">
+                        <i class="fas fa-chart-line"></i> Retention: <span id="retentionRate">0%</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- FOCUS MODE MODAL -->
+    <div class="focus-mode" id="focusMode">
+        <div class="focus-content glass-card">
+            <h1 class="text-gradient">🎯 Focus Mode</h1>
+            <p class="text-muted">25 minutes of deep work</p>
+            <div class="focus-timer" id="focusTimer">25:00</div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="startTimerBtn">
+                    <i class="fas fa-play"></i> Start Session
+                </button>
+                <button class="btn btn-outline" id="exitFocusBtn">
+                    <i class="fas fa-times"></i> Exit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEXT INPUT MODAL (for flashcards) -->
+    <div class="modal" id="textInputModal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2><i class="fas fa-keyboard"></i> Enter Text</h2>
+                <button class="icon-btn" id="closeTextModal"><i class="fas fa-times"></i></button>
+            </div>
+            <textarea id="flashcardTextInput" class="form-input" placeholder="Paste your notes or content here..."></textarea>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="processTextBtn">Generate Flashcards</button>
+                <button class="btn btn-outline" id="cancelTextBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOICE INPUT MODAL (placeholder) -->
+    <div class="modal" id="voiceInputModal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2><i class="fas fa-microphone"></i> Voice Input</h2>
+                <button class="icon-btn" id="closeVoiceModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="voice-container">
+                <div class="voice-status" id="voiceStatus">
+                    <i class="fas fa-circle"></i> Click to start recording
+                </div>
+                <button class="btn btn-primary" id="recordBtn">
+                    <i class="fas fa-microphone"></i> Record
+                </button>
+                <div class="recording-time" id="recordingTime">00:00</div>
+                <div class="transcription-result" id="transcriptionResult">
+                    <h4>Transcription:</h4>
+                    <div id="transcriptionText"></div>
+                    <button class="btn btn-primary" id="useTranscriptionBtn">Use This Text</button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-outline" id="cancelVoiceBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHATBOT TOGGLE BUTTON -->
+    <button class="chatbot-toggle" id="chatbotToggle">
+        <i class="fas fa-robot"></i>
+        <span class="chatbot-badge" id="chatbotBadge">1</span>
+    </button>
+
+    <!-- BOTPRESS CHATBOT CONTAINER (hidden by default) -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <span><i class="fas fa-robot"></i> StudyBuddy AI</span>
+            <button class="icon-btn" id="closeChatbotBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <iframe id="botpressIframe" 
+                src="https://cdn.botpress.cloud/webchat/v3.2/shareable.html?configUrl=https://files.bpcontent.cloud/2025/09/19/12/20250919120812-U02J9S5K.json"
+                frameborder="0"
+                allow="microphone; camera">
+        </iframe>
+    </div>
+
+    <!-- ACHIEVEMENT CONTAINER (toast notifications) -->
+    <div class="achievements" id="achievementContainer"></div>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/state.js"></script>
+    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/pdf-processor.js"></script>
+    <script type="module" src="js/quiz-generator.js"></script>
+    <script type="module" src="js/flashcards.js"></script>
+    <script type="module" src="js/themes.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

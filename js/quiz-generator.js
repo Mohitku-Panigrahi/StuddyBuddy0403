@@ -299,4 +299,5 @@ export function showSampleQuiz() {
     
     initQuizInteraction();
     showNotification('📝 Sample quiz loaded', 'info');
+
 }
